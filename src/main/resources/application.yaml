@@ -1,3 +1,11 @@
 spring:
   application:
     name: justone-batch
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+lotto:
+  batch:
+    cron: "0 10 21 ? * SAT"
+    timezone: "Asia/Seoul"
