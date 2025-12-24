@@ -8,8 +8,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "lotto_draw_result")
-public class LottoDrawResult {
+@Table(name = "lotto_result")
+public class LottoResult {
 	@Id
 	private Integer drawNo;
 
@@ -37,10 +37,10 @@ public class LottoDrawResult {
 	@Column(nullable = false)
 	private Integer bonusNumber;
 
-	protected LottoDrawResult() {
+	protected LottoResult() {
 	}
 
-	public LottoDrawResult(
+	public LottoResult(
 		Integer drawNo,
 		LocalDate drawDate,
 		Integer number1,

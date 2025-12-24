@@ -26,7 +26,7 @@ public class LottoBatchService {
 	@Transactional
 	public void fetchLatestDraw() {
 		int nextDrawNo = lottoDrawResultRepository.findTopByOrderByDrawNoDesc()
-			.map(LottoDrawResult::getDrawNo)
+			.map(LottoResult::getDrawNo)
 			.map(last -> last + 1)
 			.orElse(1);
 
@@ -36,14 +36,14 @@ public class LottoBatchService {
 			return;
 		}
 
-		Optional<LottoDrawResult> existing = lottoDrawResultRepository.findById(response.drawNo());
+		Optional<LottoResult> existing = lottoDrawResultRepository.findById(response.drawNo());
 		if (existing.isPresent()) {
 			logger.info("Draw {} already exists. Skipping insert.", response.drawNo());
 			return;
 		}
 
 		LocalDate drawDate = LocalDate.parse(response.drawDate(), DATE_FORMATTER);
-		LottoDrawResult result = new LottoDrawResult(
+		LottoResult result = new LottoResult(
 			response.drawNo(),
 			drawDate,
 			response.number1(),
@@ -63,7 +63,7 @@ public class LottoBatchService {
 	public void backfillMissingDraws(int maxAttempts) {
 		for (int i = 0; i < maxAttempts; i++) {
 			int nextDrawNo = lottoDrawResultRepository.findTopByOrderByDrawNoDesc()
-				.map(LottoDrawResult::getDrawNo)
+				.map(LottoResult::getDrawNo)
 				.map(last -> last + 1)
 				.orElse(1);
 
@@ -74,7 +74,7 @@ public class LottoBatchService {
 			}
 
 			LocalDate drawDate = LocalDate.parse(response.drawDate(), DATE_FORMATTER);
-			LottoDrawResult result = new LottoDrawResult(
+			LottoResult result = new LottoResult(
 				response.drawNo(),
 				drawDate,
 				response.number1(),
