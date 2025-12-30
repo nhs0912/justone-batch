@@ -15,8 +15,8 @@ public record LottoApiResponse(
 	@JsonProperty("drwtNo5") int number5,
 	@JsonProperty("drwtNo6") int number6,
 	@JsonProperty("bnusNo") int bonusNumber,
-	@JsonProperty("first_przwner_co") Integer firstPrzwnerCo,
-	@JsonProperty("first_win_amnt") BigDecimal firstWinAmnt,
-	@JsonProperty("first_accum_amnt") BigDecimal firstAccumAmnt,
-	@JsonProperty("tot_sell_amnt") BigDecimal totSellAmnt
+	@JsonProperty("firstPrzwnerCo") Integer firstPrzwnerCo,
+	@JsonProperty("firstWinamnt") BigDecimal firstWinAmnt,
+	@JsonProperty("firstAccumamnt") BigDecimal firstAccumAmnt,
+	@JsonProperty("totSellamnt") BigDecimal totSellAmnt
 ) {}

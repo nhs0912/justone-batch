@@ -62,7 +62,7 @@ public class LottoBatchService {
                 .returnValue(response.returnValue())
                 .totSellAmnt(response.totSellAmnt())
                 .build();
-
+        log.info("result==={}", result.toString());
         lottoDrawResultRepository.save(result);
         logger.info("Inserted lotto draw {}", response.drwNo());
     }
