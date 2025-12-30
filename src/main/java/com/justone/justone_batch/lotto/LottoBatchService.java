@@ -26,10 +26,10 @@ public class LottoBatchService {
     }
 
     @Transactional
-    public void fetchAllDraw(final int start, final int end) {
+    public void fetchAllDraw(final Integer start, final Integer end) {
         for (int i = start; i <= end; i++) {
             log.info("lotto count = {}", i);
-            LottoApiResponse response = lottoApiClient.fetchLatest(start);
+            LottoApiResponse response = lottoApiClient.fetchLatest(i);
             if (isNotExistData(response)) {
                 logger.info("Lotto API returned no data for draw {}", i);
                 break;
