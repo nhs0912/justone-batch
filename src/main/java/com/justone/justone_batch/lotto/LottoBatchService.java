@@ -26,6 +26,49 @@ public class LottoBatchService {
     }
 
     @Transactional
+    public void fetchAllDraw(final int start, final int end) {
+        for (int i = start; i <= end; i++) {
+            LottoApiResponse response = lottoApiClient.fetchLatest(start);
+            if (isNotExistData(response)) {
+                logger.info("Lotto API returned no data for draw {}", i);
+                break;
+            }
+
+            Optional<LottoResult> existing = lottoDrawResultRepository.findById(response.drwNo());
+            if (existing.isPresent()) {
+                logger.info("Draw {} already exists. Skipping insert.", response.drwNo());
+                continue;
+            }
+            LocalDate drawDate = LocalDate.parse(response.drwDate(), DATE_FORMATTER);
+            LottoResult result = LottoResult
+                    .builder()
+                    .drwNo(response.drwNo())
+                    .drwDate(drawDate)
+                    .number1(response.number1())
+                    .number2(response.number2())
+                    .number3(response.number3())
+                    .number4(response.number4())
+                    .number5(response.number5())
+                    .number6(response.number6())
+                    .bonusNumber(response.bonusNumber())
+                    .firstPrzwnerCo(response.firstPrzwnerCo())
+                    .firstWinAmnt(response.firstWinAmnt())
+                    .firstAccumAmnt(response.firstAccumAmnt())
+                    .returnValue(response.returnValue())
+                    .totSellAmnt(response.totSellAmnt())
+                    .build();
+            log.info("result==={}", result.toString());
+            lottoDrawResultRepository.save(result);
+            logger.info("Inserted lotto draw {}", response.drwNo());
+        }
+
+    }
+
+    private boolean isNotExistData(final LottoApiResponse response) {
+        return response == null || !"success".equalsIgnoreCase(response.returnValue());
+    }
+
+    @Transactional
     public void fetchLatestDraw() {
         int nextDrawNo = lottoDrawResultRepository.findTopByOrderByDrwNoDesc()
                 .map(LottoResult::getDrwNo)
@@ -82,19 +125,26 @@ public class LottoBatchService {
             }
 
             LocalDate drawDate = LocalDate.parse(response.drwDate(), DATE_FORMATTER);
-            LottoResult result = new LottoResult(
-                    response.drwNo(),
-                    drawDate,
-                    response.number1(),
-                    response.number2(),
-                    response.number3(),
-                    response.number4(),
-                    response.number5(),
-                    response.number6(),
-                    response.bonusNumber()
-            );
-
+            LottoResult result = LottoResult
+                    .builder()
+                    .drwNo(response.drwNo())
+                    .drwDate(drawDate)
+                    .number1(response.number1())
+                    .number2(response.number2())
+                    .number3(response.number3())
+                    .number4(response.number4())
+                    .number5(response.number5())
+                    .number6(response.number6())
+                    .bonusNumber(response.bonusNumber())
+                    .firstPrzwnerCo(response.firstPrzwnerCo())
+                    .firstWinAmnt(response.firstWinAmnt())
+                    .firstAccumAmnt(response.firstAccumAmnt())
+                    .returnValue(response.returnValue())
+                    .totSellAmnt(response.totSellAmnt())
+                    .build();
+            log.info("result==={}", result.toString());
             lottoDrawResultRepository.save(result);
+            logger.info("Inserted lotto draw {}", response.drwNo());
         }
         logger.info("Backfill completed after {} attempts", maxAttempts);
     }
