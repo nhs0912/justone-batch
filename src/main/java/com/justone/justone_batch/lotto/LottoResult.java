@@ -1,12 +1,19 @@
 package com.justone.justone_batch.lotto;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.*;
 
+@Builder
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "lotto_result")
 public class LottoResult {
@@ -37,20 +44,27 @@ public class LottoResult {
 
 	@Column(name = "bnus_no", nullable = false)
 	private Integer bonusNumber;
-
-	protected LottoResult() {
-	}
+	@Column(name = "first_przwner_co", nullable = false)
+	private Integer firstPrzwnerCo;
+	@Column(name = "first_win_amnt", nullable = false)
+	private BigDecimal firstWinAmnt;
+	@Column(name = "first_accum_amnt", nullable = false)
+	private BigDecimal firstAccumAmnt;
+	@Column(name = "return_value", nullable = false)
+	private String returnValue;
+    @Column(name = "tot_sell_amnt", nullable = false)
+	private BigDecimal totSellAmnt;
 
 	public LottoResult(
-		Integer drwNo,
-		LocalDate drwDate,
-		Integer number1,
-		Integer number2,
-		Integer number3,
-		Integer number4,
-		Integer number5,
-		Integer number6,
-		Integer bonusNumber
+			Integer drwNo,
+			LocalDate drwDate,
+			Integer number1,
+			Integer number2,
+			Integer number3,
+			Integer number4,
+			Integer number5,
+			Integer number6,
+			Integer bonusNumber
 	) {
 		this.drwNo = drwNo;
 		this.drwDate = drwDate;
@@ -99,3 +113,4 @@ public class LottoResult {
 		return bonusNumber;
 	}
 }
+

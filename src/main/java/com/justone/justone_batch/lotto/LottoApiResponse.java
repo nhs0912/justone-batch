@@ -2,6 +2,8 @@ package com.justone.justone_batch.lotto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
+
 public record LottoApiResponse(
 	@JsonProperty("returnValue") String returnValue,
 	@JsonProperty("drwNo") int drwNo,
@@ -12,5 +14,9 @@ public record LottoApiResponse(
 	@JsonProperty("drwtNo4") int number4,
 	@JsonProperty("drwtNo5") int number5,
 	@JsonProperty("drwtNo6") int number6,
-	@JsonProperty("bnusNo") int bonusNumber
+	@JsonProperty("bnusNo") int bonusNumber,
+	@JsonProperty("first_przwner_co") Integer firstPrzwnerCo,
+	@JsonProperty("first_win_amnt") BigDecimal firstWinAmnt,
+	@JsonProperty("first_accum_amnt") BigDecimal firstAccumAmnt,
+	@JsonProperty("tot_sell_amnt") BigDecimal totSellAmnt
 ) {}
