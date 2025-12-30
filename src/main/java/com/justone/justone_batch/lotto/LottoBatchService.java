@@ -25,8 +25,8 @@ public class LottoBatchService {
 
 	@Transactional
 	public void fetchLatestDraw() {
-		int nextDrawNo = lottoDrawResultRepository.findTopByOrderByDrawNoDesc()
-			.map(LottoResult::getDrawNo)
+		int nextDrawNo = lottoDrawResultRepository.findTopByOrderByDrwNoDesc()
+			.map(LottoResult::getDrwNo)
 			.map(last -> last + 1)
 			.orElse(1);
 
@@ -36,15 +36,15 @@ public class LottoBatchService {
 			return;
 		}
 
-		Optional<LottoResult> existing = lottoDrawResultRepository.findById(response.drawNo());
+		Optional<LottoResult> existing = lottoDrawResultRepository.findById(response.drwNo());
 		if (existing.isPresent()) {
-			logger.info("Draw {} already exists. Skipping insert.", response.drawNo());
+			logger.info("Draw {} already exists. Skipping insert.", response.drwNo());
 			return;
 		}
 
-		LocalDate drawDate = LocalDate.parse(response.drawDate(), DATE_FORMATTER);
+		LocalDate drawDate = LocalDate.parse(response.drwDate(), DATE_FORMATTER);
 		LottoResult result = new LottoResult(
-			response.drawNo(),
+			response.drwNo(),
 			drawDate,
 			response.number1(),
 			response.number2(),
@@ -56,14 +56,14 @@ public class LottoBatchService {
 		);
 
 		lottoDrawResultRepository.save(result);
-		logger.info("Inserted lotto draw {}", response.drawNo());
+		logger.info("Inserted lotto draw {}", response.drwNo());
 	}
 
 	@Transactional
 	public void backfillMissingDraws(int maxAttempts) {
 		for (int i = 0; i < maxAttempts; i++) {
-			int nextDrawNo = lottoDrawResultRepository.findTopByOrderByDrawNoDesc()
-				.map(LottoResult::getDrawNo)
+			int nextDrawNo = lottoDrawResultRepository.findTopByOrderByDrwNoDesc()
+				.map(LottoResult::getDrwNo)
 				.map(last -> last + 1)
 				.orElse(1);
 
@@ -73,9 +73,9 @@ public class LottoBatchService {
 				return;
 			}
 
-			LocalDate drawDate = LocalDate.parse(response.drawDate(), DATE_FORMATTER);
+			LocalDate drawDate = LocalDate.parse(response.drwDate(), DATE_FORMATTER);
 			LottoResult result = new LottoResult(
-				response.drawNo(),
+				response.drwNo(),
 				drawDate,
 				response.number1(),
 				response.number2(),

@@ -11,38 +11,39 @@ import jakarta.persistence.Table;
 @Table(name = "lotto_result")
 public class LottoResult {
 	@Id
-	private Integer drawNo;
+	@Column(name = "drw_no")
+	private Integer drwNo;
 
-	@Column(nullable = false)
-	private LocalDate drawDate;
+	@Column(name = "drw_no_date", nullable = false)
+	private LocalDate drwDate;
 
-	@Column(nullable = false)
+	@Column(name = "drwt_no1", nullable = false)
 	private Integer number1;
 
-	@Column(nullable = false)
+	@Column(name = "drwt_no2", nullable = false)
 	private Integer number2;
 
-	@Column(nullable = false)
+	@Column(name = "drwt_no3", nullable = false)
 	private Integer number3;
 
-	@Column(nullable = false)
+	@Column(name = "drwt_no4", nullable = false)
 	private Integer number4;
 
-	@Column(nullable = false)
+	@Column(name = "drwt_no5", nullable = false)
 	private Integer number5;
 
-	@Column(nullable = false)
+	@Column(name = "drwt_no6", nullable = false)
 	private Integer number6;
 
-	@Column(nullable = false)
+	@Column(name = "bnus_no", nullable = false)
 	private Integer bonusNumber;
 
 	protected LottoResult() {
 	}
 
 	public LottoResult(
-		Integer drawNo,
-		LocalDate drawDate,
+		Integer drwNo,
+		LocalDate drwDate,
 		Integer number1,
 		Integer number2,
 		Integer number3,
@@ -51,8 +52,8 @@ public class LottoResult {
 		Integer number6,
 		Integer bonusNumber
 	) {
-		this.drawNo = drawNo;
-		this.drawDate = drawDate;
+		this.drwNo = drwNo;
+		this.drwDate = drwDate;
 		this.number1 = number1;
 		this.number2 = number2;
 		this.number3 = number3;
@@ -62,12 +63,12 @@ public class LottoResult {
 		this.bonusNumber = bonusNumber;
 	}
 
-	public Integer getDrawNo() {
-		return drawNo;
+	public Integer getDrwNo() {
+		return drwNo;
 	}
 
-	public LocalDate getDrawDate() {
-		return drawDate;
+	public LocalDate getDrwDate() {
+		return drwDate;
 	}
 
 	public Integer getNumber1() {

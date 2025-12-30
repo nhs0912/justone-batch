@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public record LottoApiResponse(
 	@JsonProperty("returnValue") String returnValue,
-	@JsonProperty("drwNo") int drawNo,
-	@JsonProperty("drwNoDate") String drawDate,
+	@JsonProperty("drwNo") int drwNo,
+	@JsonProperty("drwNoDate") String drwDate,
 	@JsonProperty("drwtNo1") int number1,
 	@JsonProperty("drwtNo2") int number2,
 	@JsonProperty("drwtNo3") int number3,
