@@ -28,6 +28,7 @@ public class LottoBatchService {
     @Transactional
     public void fetchAllDraw(final int start, final int end) {
         for (int i = start; i <= end; i++) {
+            log.info("lotto count = {}", i);
             LottoApiResponse response = lottoApiClient.fetchLatest(start);
             if (isNotExistData(response)) {
                 logger.info("Lotto API returned no data for draw {}", i);
@@ -60,6 +61,7 @@ public class LottoBatchService {
             log.info("result==={}", result.toString());
             lottoDrawResultRepository.save(result);
             logger.info("Inserted lotto draw {}", response.drwNo());
+            log.info("lotto insert 성공! = {}", i);
         }
 
     }
