@@ -1,3 +1,19 @@
 spring:
   application:
     name: justone-batch
+  batch:
+    jdbc:
+      initialize-schema: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://nhs0912.iptime.org:3333/lotto?allowPublicKeyRetrieval=true&userSSL=true&serverTimezone=Asia/Seoul
+    username: nhs0912
+    password: "#nhs0912"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+lotto:
+  batch:
+    cron: "0 10 21 ? * SAT"
+    timezone: "Asia/Seoul"

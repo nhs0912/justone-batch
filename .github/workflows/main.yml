@@ -1,0 +1,31 @@
+name: Run Batch Job
+
+on:
+  schedule:
+    - cron: '10 12 * * 6' # KST 21:10 on Saturday
+    - cron: '0 13 * * 6'  # KST 22:00 on Saturday
+  workflow_dispatch:
+
+jobs:
+  build-and-run:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up JDK 25 (EA)
+      uses: actions/setup-java@v3
+      with:
+        java-version: '25-ea'
+        distribution: 'temurin'
+
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew build
+
+    - name: Build Docker image
+      run: docker build -t justone-batch .
+
+    - name: Run Docker container
+      run: docker run justone-batch
