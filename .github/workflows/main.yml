@@ -5,6 +5,13 @@ on:
     - cron: '10 12 * * 6' # KST 21:10 on Saturday
     - cron: '0 13 * * 6'  # KST 22:00 on Saturday
   workflow_dispatch:
+    inputs:
+      jobName:
+        description: 'Batch job name to run'
+        required: false
+      jobParameters:
+        description: 'Job parameters'
+        required: false
 
 jobs:
   build-and-run:
@@ -28,4 +35,9 @@ jobs:
       run: docker build -t justone-batch .
 
     - name: Run Docker container
-      run: docker run justone-batch
+      run: |
+        if [ -n "${{ github.event.inputs.jobName }}" ]; then
+          docker run justone-batch --spring.batch.job.name=${{ github.event.inputs.jobName }} ${{ github.event.inputs.jobParameters }}
+        else
+          docker run justone-batch
+        fi
