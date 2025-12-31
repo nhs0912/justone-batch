@@ -41,9 +41,12 @@ jobs:
           docker run justone-batch --spring.batch.job.name=${{ github.event.inputs.jobName }} ${{ github.event.inputs.jobParameters }}
         else
           # Scheduled run with pre-defined parameters
-          # TODO: 아래 파라미터를 실제 스케줄 실행에 필요한 값으로 수정해주세요. (예: 최신 회차 조회)
           docker run justone-batch --spring.batch.job.name=lottoSelectJob start=1 end=3000
         fi
+
+    - name: Get current time
+      id: time
+      run: echo "date=$(TZ='Asia/Seoul' date +'%Y-%m-%d %H:%M:%S KST')" >> $GITHUB_OUTPUT
 
     - name: Send Telegram Notification
       uses: appleboy/telegram-action@master
@@ -52,5 +55,6 @@ jobs:
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
           JustOne Batch Job finished with status: ${{ job.status }}.
+          Executed at: ${{ steps.time.outputs.date }}
           See details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       if: always()
