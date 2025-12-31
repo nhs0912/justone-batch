@@ -34,6 +34,12 @@ jobs:
     - name: Build Docker image
       run: docker build -t justone-batch .
 
+    - name: Get start time
+      id: start_time
+      run: |
+        echo "date=$(TZ='Asia/Seoul' date +'%Y-%m-%d %H:%M:%S KST')" >> $GITHUB_OUTPUT
+        echo "ts=$(date +%s)" >> $GITHUB_OUTPUT
+
     - name: Run Docker container
       run: |
         if [ -n "${{ github.event.inputs.jobName }}" ]; then
@@ -44,9 +50,20 @@ jobs:
           docker run justone-batch --spring.batch.job.name=lottoSelectJob start=1 end=3000
         fi
 
-    - name: Get current time
-      id: time
-      run: echo "date=$(TZ='Asia/Seoul' date +'%Y-%m-%d %H:%M:%S KST')" >> $GITHUB_OUTPUT
+    - name: Get end time and calculate duration
+      id: end_time
+      if: always()
+      run: |
+        end_ts=$(date +%s)
+        start_ts=${{ steps.start_time.outputs.ts }}
+        total_seconds=$((end_ts - start_ts))
+        
+        hours=$((total_seconds / 3600))
+        minutes=$(((total_seconds % 3600) / 60))
+        seconds=$((total_seconds % 60))
+        
+        echo "date=$(TZ='Asia/Seoul' date +'%Y-%m-%d %H:%M:%S KST')" >> $GITHUB_OUTPUT
+        echo "duration_formatted=${hours}h ${minutes}m ${seconds}s" >> $GITHUB_OUTPUT
 
     - name: Send Telegram Notification
       uses: appleboy/telegram-action@master
@@ -55,6 +72,10 @@ jobs:
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
           JustOne Batch Job finished with status: ${{ job.status }}.
-          Executed at: ${{ steps.time.outputs.date }}
+
+          Start:    ${{ steps.start_time.outputs.date }}
+          End:      ${{ steps.end_time.outputs.date }}
+          Duration: ${{ steps.end_time.outputs.duration_formatted }}
+
           See details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       if: always()
