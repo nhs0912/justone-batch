@@ -16,6 +16,10 @@ on:
 jobs:
   build-and-run:
     runs-on: ubuntu-latest
+    env:
+      JOB_NAME: ${{ github.event.inputs.jobName || 'lottoJob' }}
+      JOB_PARAMS: ${{ github.event.inputs.jobParameters || 'lotteryNo=all' }}
+
     steps:
     - uses: actions/checkout@v3
 
@@ -42,13 +46,17 @@ jobs:
 
     - name: Run Docker container
       run: |
-        if [ -n "${{ github.event.inputs.jobName }}" ]; then
-          # Manual run with user-provided inputs
-          docker run justone-batch --spring.batch.job.name=${{ github.event.inputs.jobName }} ${{ github.event.inputs.jobParameters }} now=${{ steps.start_time.outputs.ts }}
-        else
-          # Scheduled run with pre-defined parameters
-          docker run justone-batch --spring.batch.job.name=lottoJob lotteryNo=all now=${{ steps.start_time.outputs.ts }}
-        fi
+        docker run justone-batch --spring.batch.job.name=${{ env.JOB_NAME }} ${{ env.JOB_PARAMS }} now=${{ steps.start_time.outputs.ts }} > docker_run.log 2>&1
+
+    - name: Parse run log
+      id: parse_log
+      if: always()
+      run: |
+        # TODO: Update the grep pattern based on the actual application log for processed items.
+        # For example, if the app logs "Total items processed: 100", use:
+        # count=$(grep 'Total items processed:' docker_run.log | sed -n 's/.*: //p' || echo 'N/A')
+        count='N/A'
+        echo "insert_count=$count" >> $GITHUB_OUTPUT
 
     - name: Get end time and calculate duration
       id: end_time
@@ -71,11 +79,16 @@ jobs:
         to: ${{ secrets.TELEGRAM_CHAT_ID }}
         token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
         message: |
-          JustOne Batch Job finished with status: ${{ job.status }}.
+          JustOne Batch Job Finished!
 
-          Start:    ${{ steps.start_time.outputs.date }}
-          End:      ${{ steps.end_time.outputs.date }}
-          Duration: ${{ steps.end_time.outputs.duration_formatted }}
+          - *Result*: ${{ job.status }}
+          - *Job Name*: ${{ env.JOB_NAME }}
+          - *Parameters*: ${{ env.JOB_PARAMS }}
+          - *Inserted*: ${{ steps.parse_log.outputs.insert_count }}
+
+          - *Start*: ${{ steps.start_time.outputs.date }}
+          - *End*: ${{ steps.end_time.outputs.date }}
+          - *Duration*: ${{ steps.end_time.outputs.duration_formatted }}
 
           See details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
       if: always()
