@@ -32,6 +32,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-webmvc")
 	implementation("tools.jackson.core:jackson-core:3.0.3")
 	implementation("tools.jackson.core:jackson-databind:3.0.3")
+	implementation("org.projectlombok:lombok:1.18.42")
 
 	compileOnly("org.projectlombok:lombok")
 	annotationProcessor("org.projectlombok:lombok")
@@ -41,7 +42,8 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-validation-test")
 	testImplementation("org.springframework.boot:spring-boot-starter-webmvc-test")
 	runtimeOnly("com.mysql:mysql-connector-j")
-	runtimeOnly("com.mysql:mysql-connector-j")
+
+
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
