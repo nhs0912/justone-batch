@@ -1,6 +1,7 @@
 package com.justone.justone_batch.lotto.service;
 
 import com.justone.justone_batch.lotto.LottoApiClient;
+import com.justone.justone_batch.lotto.entity.LottoResult;
 import com.justone.justone_batch.lotto.repository.LottoDrawResultRepository;
 import com.justone.justone_batch.lotto.dto.LottoApiResponse;
 import com.justone.justone_batch.lotto.dto.LottoApiWrapperResponse;
@@ -47,10 +48,10 @@ public class LottoBatchService {
         }
 
         var entities = list.stream().map(LottoApiResponse::toEntity).toList();
-        var ids = entities.stream().map(e -> e.getLotteryNo()).toList();
+        var ids = entities.stream().map(LottoResult::getLotteryNo).toList();
 
         var existingIds = lottoDrawResultRepository.findAllById(ids).stream()
-                .map(e -> e.getLotteryNo())
+                .map(LottoResult::getLotteryNo)
                 .collect(java.util.stream.Collectors.toSet());
         var toSave = entities.stream()
                 .filter(e -> !existingIds.contains(e.getLotteryNo()))

@@ -17,7 +17,6 @@ import java.net.URI;
 public class LottoApiClient {
     private final RestClient restClient;
     private final URI baseUri;
-    private final ObjectMapper objectMapper;
 
     public LottoApiClient(
             RestClient.Builder restClientBuilder,
@@ -25,11 +24,9 @@ public class LottoApiClient {
             @Value("${lotto.api.base-url:https://www.dhlottery.co.kr/lt645/selectPstLt645Info.do}") String baseUrl
     ) {
         this.restClient = restClientBuilder.build();
-        this.objectMapper = objectMapper;
         this.baseUri = URI.create(baseUrl);
     }
 
-    //?srchLtEpsd=all&_=1767334036641
     public LottoApiWrapperResponse fetchLatest(String lotteryNo) {
         URI uri = UriComponentsBuilder.fromUri(baseUri)
                 .queryParam("srchLtEpsd", lotteryNo)
@@ -48,7 +45,7 @@ public class LottoApiClient {
             if (responseBody == null) {
                 throw new IllegalStateException("Received empty body from Lotto API for ltEpsd " + lotteryNo);
             }
-            log.info("responseBody = {}", responseBody);
+            log.info("로또 전체 회차 = {}", responseBody.data().list().size());
             return responseBody;
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse JSON response from Lotto API. Body: " + responseBody, e);
