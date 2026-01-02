@@ -44,10 +44,10 @@ jobs:
       run: |
         if [ -n "${{ github.event.inputs.jobName }}" ]; then
           # Manual run with user-provided inputs
-          docker run justone-batch --spring.batch.job.name=${{ github.event.inputs.jobName }} ${{ github.event.inputs.jobParameters }}
+          docker run justone-batch --spring.batch.job.name=${{ github.event.inputs.jobName }} ${{ github.event.inputs.jobParameters }} now=${{ steps.start_time.outputs.ts }}
         else
           # Scheduled run with pre-defined parameters
-          docker run justone-batch --spring.batch.job.name=lottoSelectJob start=1 end=3000
+          docker run justone-batch --spring.batch.job.name=lottoJob lotteryNo=all now=${{ steps.start_time.outputs.ts }}
         fi
 
     - name: Get end time and calculate duration
