@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -28,15 +29,18 @@ public class LottoBatchService {
     }
 
     @Transactional
-    public void fetchDraw(final String lotteryNo) {
+    public void fetchDraw(String lotteryNo) {
 
         log.info("lotteryNo ==={}", lotteryNo);
+        if(!StringUtils.hasText(lotteryNo)){
+            lotteryNo = "all";
+        }
         LottoApiWrapperResponse wrapper = lottoApiClient.fetchLatest(lotteryNo);
 
         var list = Optional.ofNullable(wrapper)
                 .map(LottoApiWrapperResponse::data)
                 .map(LottoApiWrapperResponse.LottoApiData::list)
-                .orElseThrow(() -> new IllegalStateException("No lotto data for ltEpsd " + lotteryNo));
+                .orElseThrow(() -> new IllegalStateException("No lotto data for lotteryNo "));
         if (list.isEmpty()) {
             log.info("Empty list. lotteryNo={}", lotteryNo);
             return;
