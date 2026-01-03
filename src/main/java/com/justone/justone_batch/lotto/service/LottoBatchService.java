@@ -59,5 +59,6 @@ public class LottoBatchService {
 
         lottoDrawResultRepository.saveAll(toSave);
         log.info("Inserted {} new rows (out of {})", toSave.size(), entities.size());
+        System.out.println("Total items processed: " + toSave.size());
     }
 }
